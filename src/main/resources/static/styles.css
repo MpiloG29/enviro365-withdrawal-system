@@ -1,0 +1,258 @@
+:root {
+    --color-text: #1f2933;
+    --color-muted: #616e7c;
+    --color-border: #d2d6dc;
+    --color-bg: #f5f6f8;
+    --color-surface: #ffffff;
+    --color-primary: #1c4e80;
+    --color-primary-dark: #163e66;
+    --color-error-text: #9b1c1c;
+    --color-error-bg: #fde8e8;
+    --color-error-border: #f8b4b4;
+    --color-success-text: #276749;
+    --color-success-bg: #e6f4ea;
+    --color-success-border: #9ae6b4;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: 1.5;
+}
+
+.app-header {
+    background: var(--color-primary);
+    color: #ffffff;
+    padding: 1.5rem 2rem;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.app-subtitle {
+    margin: 0.25rem 0 0;
+    opacity: 0.85;
+    font-size: 0.9rem;
+}
+
+main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+.card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
+.muted {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+}
+
+/* Investor picker */
+
+.investor-picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.investor-picker label {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+}
+
+.picker-divider {
+    color: var(--color-muted);
+    margin: 0 0.25rem;
+}
+
+/* Forms */
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+input,
+select {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 1rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+}
+
+.form-row {
+    margin-bottom: 1rem;
+}
+
+.form-row input,
+.form-row select {
+    width: 100%;
+    max-width: 320px;
+}
+
+button {
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Feedback: banners and inline field errors */
+
+.error-banner,
+.message-banner {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.error-banner,
+.message-banner.error {
+    color: var(--color-error-text);
+    background: var(--color-error-bg);
+    border: 1px solid var(--color-error-border);
+}
+
+.message-banner.success {
+    color: var(--color-success-text);
+    background: var(--color-success-bg);
+    border: 1px solid var(--color-success-border);
+}
+
+.field-error {
+    display: block;
+    color: var(--color-error-text);
+    font-size: 0.82rem;
+    min-height: 1.1em;
+    margin-top: 0.2rem;
+}
+
+/* Portfolio */
+
+.investor-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+#investor-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.product-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.product-card {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+}
+
+.product-card h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+}
+
+.product-type {
+    margin: 0 0 0.5rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.product-balance {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+/* History table */
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.history-table th,
+.history-table td {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.history-table th {
+    color: var(--color-muted);
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* CSV export */
+
+.csv-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+.csv-controls label {
+    margin-bottom: 0.25rem;
+}
+
+.csv-controls input[type="date"] {
+    width: auto;
+}
