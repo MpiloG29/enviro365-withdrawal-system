@@ -35,6 +35,29 @@ To run the tests:
 mvn test
 ```
 
+## Deployment (Docker / Render)
+
+Render has no native Java/Maven runtime, so Java apps are deployed there via Docker. A multi-stage
+`Dockerfile` is included (Maven+JDK build stage → JRE-only runtime stage):
+
+```bash
+docker build -t enviro365-withdrawal-system .
+docker run -p 8080:8080 enviro365-withdrawal-system
+```
+
+On Render: create a Web Service, point it at this repo, leave Build/Start commands empty (Docker handles
+both), and Render will build the `Dockerfile` directly. Two things the image already handles:
+
+- **Port**: `server.port=${PORT:8080}` in `application.properties` reads Render's `PORT` env var at runtime,
+  falling back to 8080 for local/Docker runs where `PORT` isn't set.
+- **H2 console**: the image sets `SPRING_PROFILES_ACTIVE=prod`, which activates
+  `application-prod.properties` and disables `spring.h2.console.enabled`. It stays enabled for local
+  `mvn spring-boot:run` (no profile active) — the console has no password (`sa`/blank), which is fine on
+  localhost but not on a public URL.
+
+Because the database is in-memory, every restart (including Render's free-tier spin-down after inactivity)
+resets all data back to the seed script — there's no persistent volume or external database involved.
+
 ## Seeded data
 
 `data.sql` loads three investors on every startup (the in-memory database is recreated each run), covering the

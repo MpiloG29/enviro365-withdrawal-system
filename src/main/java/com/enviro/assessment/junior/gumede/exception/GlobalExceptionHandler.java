@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -103,6 +104,24 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 ex.getMessage(),
+                request.getRequestURI());
+    }
+
+    // Thrown by Spring MVC itself whenever a request doesn't match any controller mapping or static resource
+    // - a typo'd URL, a disabled endpoint (e.g. /h2-console when spring.h2.console.enabled=false), a missing
+    // asset. Without this handler it falls through to the catch-all below: NoResourceFoundException is a
+    // RuntimeException with no more specific handler registered, so "closest match wins" matches it to
+    // Exception.class and reports a routine 404 as a 500, complete with an ERROR-level stack trace for what
+    // is not a server bug at all. Caught this by actually curling a disabled endpoint after containerizing
+    // the app, not by reading the code - it would have looked identical to a real bug in production logs.
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        log.warn("No resource found for {}", request.getRequestURI());
+        return ErrorResponse.of(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                "The requested resource was not found.",
                 request.getRequestURI());
     }
 
