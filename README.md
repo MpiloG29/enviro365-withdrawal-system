@@ -42,8 +42,8 @@ three cases the retirement-age rule needs to be tested against:
 
 | Id | Name | Age (as of 2026) | Products |
 |---|---|---|---|
-| 1 | Thandiwe Nkosi | 71 | Retirement Annuity (RETIREMENT) — R850,000.00 |
-| 2 | Sipho Mahlangu | 46 | Retirement Annuity (RETIREMENT) — R320,000.00 - too young to withdraw from it |
+| 1 | Thandiwe Nkosi | 71 | Retirement Annuity (RETIREMENT) - R850,000.00 |
+| 2 | Sipho Mahlangu | 46 | Retirement Annuity (RETIREMENT)  R320,000.00 - too young to withdraw from it |
 | 3 | Lerato Dube | 35 | Flexible Savings Account, Tax-Free Savings Account (SAVINGS) |
 
 ## Business rules
@@ -211,7 +211,7 @@ storing balanceAfter on the notice rather than recomputing it; checking the bala
 
 ## Unit tests
 
-`WithdrawalServiceTest` (`mvn test`) uses Mockito to test `WithdrawalService` against mocked repositories —
+`WithdrawalServiceTest` (`mvn test`) uses Mockito to test `WithdrawalService` against mocked repositories 
 no Spring context, no database:
 
 - one test per business rule (positive amount, retirement age, balance, 90% cap), each asserting the specific
