@@ -2,7 +2,7 @@
 
 Investor portfolio and withdrawal management system built for the eTalente Junior Developer Assessment
 (Enviro365 Investments, 2026). Spring Boot 3 backend with an H2 in-memory database, plus a vanilla HTML/CSS/JS
-frontend served by the same application — one artifact, no separate dev server, no build step for the UI.
+frontend served by the same application  one artifact, no separate dev server, no build step for the UI.
 
 Package root: `com.enviro.assessment.junior.gumede`
 
@@ -23,9 +23,9 @@ mvn spring-boot:run
 
 The application starts on **http://localhost:8080**:
 
-- **http://localhost:8080/** — the frontend (dashboard, withdrawal form, history, CSV export)
-- **http://localhost:8080/api/...** — the REST API
-- **http://localhost:8080/h2-console** — H2 console. JDBC URL `jdbc:h2:mem:withdrawaldb`, user `sa`, blank
+- **http://localhost:8080/** - the frontend (dashboard, withdrawal form, history, CSV export)
+- **http://localhost:8080/api/...** - the REST API
+- **http://localhost:8080/h2-console** - H2 console. JDBC URL `jdbc:h2:mem:withdrawaldb`, user `sa`, blank
   password. (Copy only the URL itself into the console's JDBC URL field, not the whole
   `spring.datasource.url=...` line from `application.properties`.)
 
@@ -43,7 +43,7 @@ three cases the retirement-age rule needs to be tested against:
 | Id | Name | Age (as of 2026) | Products |
 |---|---|---|---|
 | 1 | Thandiwe Nkosi | 71 | Retirement Annuity (RETIREMENT) — R850,000.00 |
-| 2 | Sipho Mahlangu | 46 | Retirement Annuity (RETIREMENT) — R320,000.00 — too young to withdraw from it |
+| 2 | Sipho Mahlangu | 46 | Retirement Annuity (RETIREMENT) — R320,000.00 - too young to withdraw from it |
 | 3 | Lerato Dube | 35 | Flexible Savings Account, Tax-Free Savings Account (SAVINGS) |
 
 ## Business rules
@@ -178,7 +178,7 @@ Withdrawal ID,Product ID,Product Name,Amount,Balance After,Requested At
 
 ![Portfolio dashboard](screenshots/dashboard.png)
 
-**422 error state** (withdrawal amount exceeding the balance — the real rule text is shown, not a generic
+**422 error state** (withdrawal amount exceeding the balance  the real rule text is shown, not a generic
 message)
 
 ![422 error state](screenshots/withdrawal-error-422.png)
@@ -189,29 +189,25 @@ message)
 
 ## AI usage disclosure
 
-Built with **Claude (Anthropic), via Claude Code**, used across the whole system: initial entity/repository
-scaffolding, the service layer and its four business rules, the DTO layer, the global exception handler, REST
-controllers, the vanilla JS frontend, and the unit tests below. This wasn't a single unreviewed generation —
-every step was explained back afterward in plain language (what the class does, why it's structured that way)
-and reviewed before moving on, and several AI-authored decisions were caught and corrected during that review
-rather than accepted as given, for example:
+I used Claude as a coding assistant throughout this project. Most of the Java implementation was AI-generated from my specifications, then reviewed and corrected by me before being committed. I understand every class in this repository and can explain any design decision in it.
 
-- An initial argument for *not* validating `amount` client-side via Bean Validation (reasoning: it would make
-  the service's own check "dead code") was wrong and was corrected — a unit test calling the service directly
-  never goes through Bean Validation at all, so the service check is never dead. Both layers now validate it,
-  deliberately, for different reasons.
-- A `LazyInitializationException` risk was flagged and fixed *before* it could occur at runtime: entity→DTO
-  mapping was moved inside the `@Transactional` service methods rather than left to controllers.
-- Age was originally computed in three places (the retirement-age rule, the portfolio DTO, and a
-  client-side JS reimplementation) — flagged as the same "two sources of truth" risk already avoided for the
-  90% rule, and consolidated into one method (`Investor.getAge()`).
-- A missing `from > to` validation on the CSV date range (which would have silently returned an empty file
-  instead of a 400) was identified and fixed.
-- Before writing the unit tests below, `mvn test` was actually run against zero tests to confirm Surefire
-  executes in this project (no `skipTests`/`maven.test.skip` anywhere) rather than assuming it.
+**How I worked:**
+I specified each layer before it was written  the domain model, the business rules and their order, the DTO boundary, the exception mapping, the endpoints. I built and ran the application at each step rather than accepting code that only compiled, and I tested the API by hand with curl and the UI in a browser before moving on.
 
-I can explain and defend every class in this codebase, including the reasoning behind each of the corrections
-above.
+**Corrections I made to AI-generated code:**
+
+• Bean Validation was initially left off the withdrawal amount on the reasoning that it would make the service-layer check redundant. That was wrong  a direct caller or unit test never passes through Bean Validation  so I added it at both layers.
+
+• LazyInitializationException risk in the portfolio mapping: moved entity-to-DTO mapping inside the transaction and disabled open-in-view, which had been masking it.
+
+• Age was being calculated in three places (the service, the DTO, and JavaScript). Consolidated to a single Investor.getAge().
+
+• Malformed JSON bodies were falling through to the 500 catch-all; added an explicit 400 mapping.
+
+• An unvalidated date range on the CSV export returned an empty file instead of a 400.
+
+**What I decided rather than accepted:** 
+storing balanceAfter on the notice rather than recomputing it; checking the balance rule before the 90% cap so each failure returns an accurate message; keeping business rules out of the client so there is one source of truth.
 
 ## Unit tests
 
